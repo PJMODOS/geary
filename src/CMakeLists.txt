@@ -354,6 +354,7 @@ client/composer/composer-window.vala
 client/composer/contact-entry-completion.vala
 client/composer/contact-list-store.vala
 client/composer/email-entry.vala
+client/composer/reply-placement.vala
 client/composer/scrollable-overlay.vala
 client/composer/webview-edit-fixer.vala
 

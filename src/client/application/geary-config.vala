@@ -18,6 +18,7 @@ public class Configuration {
     public const string AUTOSELECT_KEY = "autoselect";
     public const string DISPLAY_PREVIEW_KEY = "display-preview";
     public const string SPELL_CHECK_KEY = "spell-check";
+    public const string REPLY_PLACEMENT_KEY = "reply-placement";
     public const string PLAY_SOUNDS_KEY = "play-sounds";
     public const string SHOW_NOTIFICATIONS_KEY = "show-notifications";
     public const string STARTUP_NOTIFICATIONS_KEY = "startup-notifications";
@@ -77,6 +78,11 @@ public class Configuration {
     
     public bool spell_check {
         get { return settings.get_boolean(SPELL_CHECK_KEY); }
+    }
+    
+    public Geary.ReplyPlacement reply_placement {
+        get { return Geary.ReplyPlacement.from_string(settings.get_string(REPLY_PLACEMENT_KEY)); }
+        set { settings.set_string(REPLY_PLACEMENT_KEY, value.to_string()); }
     }
 
     public bool play_sounds {

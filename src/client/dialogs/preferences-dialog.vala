@@ -6,6 +6,8 @@
 
 public class PreferencesDialog : Object {
     private Gtk.Dialog dialog;
+    private Gtk.ComboBoxText combo_reply_placement;
+    private Configuration config;
     
     public PreferencesDialog(Gtk.Window parent) {
         Gtk.Builder builder = GearyApplication.instance.create_builder("preferences.glade");
@@ -14,8 +16,12 @@ public class PreferencesDialog : Object {
         dialog = builder.get_object("dialog") as Gtk.Dialog;
         dialog.set_transient_for(parent);
         dialog.set_modal(true);
+
+        combo_reply_placement = (Gtk.ComboBoxText) builder.get_object("combo: reply_placement");
+        foreach (Geary.ReplyPlacement p in Geary.ReplyPlacement.get_placemens())
+            combo_reply_placement.append_text(p.display_name());
         
-        Configuration config = GearyApplication.instance.config;
+        config = GearyApplication.instance.config;
         config.bind(Configuration.AUTOSELECT_KEY, builder.get_object("autoselect"), "active");
         config.bind(Configuration.DISPLAY_PREVIEW_KEY, builder.get_object("display_preview"), "active");
         config.bind(Configuration.FOLDER_LIST_PANE_HORIZONTAL_KEY,
@@ -24,6 +30,9 @@ public class PreferencesDialog : Object {
         config.bind(Configuration.PLAY_SOUNDS_KEY, builder.get_object("play_sounds"), "active");
         config.bind(Configuration.SHOW_NOTIFICATIONS_KEY, builder.get_object("show_notifications"), "active");
         config.bind(Configuration.STARTUP_NOTIFICATIONS_KEY, builder.get_object("startup_notifications"), "active");
+
+        set_reply_placement(config.reply_placement);
+        combo_reply_placement.changed.connect(on_reply_placement_changed);
     }
     
     public void run() {
@@ -32,6 +41,24 @@ public class PreferencesDialog : Object {
         dialog.show_all();
         dialog.run();
         dialog.destroy();
+    }
+    
+    private void on_reply_placement_changed() {
+        config.reply_placement = get_reply_placement();
+    }
+
+    private Geary.ReplyPlacement get_reply_placement() {
+        return (Geary.ReplyPlacement) combo_reply_placement.get_active();
+    }
+    
+    private void set_reply_placement(Geary.ReplyPlacement placement) {
+        foreach (Geary.ReplyPlacement p in Geary.ReplyPlacement.get_placemens()) {
+            if (p == placement)
+                combo_reply_placement.set_active(p);
+        }
+        
+        if (combo_reply_placement.get_active() == -1)
+            combo_reply_placement.set_active(0);
     }
 }
 

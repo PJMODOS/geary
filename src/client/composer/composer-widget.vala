@@ -260,7 +260,8 @@ public class ComposerWidget : Gtk.EventBox {
     private Geary.RFC822.MailboxAddresses reply_cc_addresses;
     private string reply_subject = "";
     private string forward_subject = "";
-    private bool top_posting = true;
+    private Geary.ReplyPlacement reply_placement = GearyApplication.instance.config.reply_placement;
+    private bool top_posting = GearyApplication.instance.config.reply_placement != Geary.ReplyPlacement.BOTTOM;
     private string? last_quote = null;
     
     private Geary.App.DraftManager? draft_manager = null;
@@ -499,7 +500,8 @@ public class ComposerWidget : Gtk.EventBox {
                         Geary.RFC822.TextFormat.HTML);
                     pending_attachments = referred.attachments;
                     if (quote != null)
-                        top_posting = false;
+                        if (reply_placement == Geary.ReplyPlacement.AUTO)
+                            top_posting = false;
                     else
                         can_delete_quote = true;
                 break;
@@ -1069,16 +1071,16 @@ public class ComposerWidget : Gtk.EventBox {
         if (body_html == null)
             body_html = CURSOR + "<br /><br />" + signature;
         else if (top_posting)
-            body_html = CURSOR + "<br /><br />" + signature + body_html;
+            body_html = CURSOR + "<br /><br />" + signature + "<br /><br />" + body_html;
         else
-            body_html = body_html + CURSOR + "<br /><br />" + signature;
+            body_html = body_html + "<br /><br />" + CURSOR + "<br /><br />" + signature;
     }
     
     private void set_cursor() {
         if (top_posting)
-            body_html = CURSOR + body_html;
+            body_html = CURSOR + "<br /><br />" + body_html;
         else
-            body_html = body_html + CURSOR;
+            body_html = body_html + "<br /><br />" + CURSOR;
     }
     
     private bool can_save() {

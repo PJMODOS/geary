@@ -73,6 +73,11 @@
         <summary>enable inline spell checking</summary>
         <description>True to spell check while typing.</description>
     </key>
+    <key name="reply-placement" type="s">
+        <default>"AUTO"</default>
+        <summary>initial reply placement</summary>
+        <description>Acceptable values are AUTO, TOP, BOTTOM.</description>
+    </key>
     <key name="play-sounds" type="b">
         <default>true</default>
         <summary>enable notification sounds</summary>
